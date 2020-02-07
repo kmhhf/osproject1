@@ -1,0 +1,3 @@
+C:/Users/Kyle/CLionProjects/osproject1/cmake-build-debug/CMakeFiles/osproject1.dir
+C:/Users/Kyle/CLionProjects/osproject1/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Kyle/CLionProjects/osproject1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
