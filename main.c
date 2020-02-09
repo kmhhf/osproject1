@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <grp.h>
+#include <time.h>
 #include "queue.h"
 
 int main(int argc, char* argv[])
@@ -61,7 +62,7 @@ int main(int argc, char* argv[])
                 u = 1;
                 break;
             case 'l':
-                t = p = i = u = g = s = 1;
+                t = p = i = u = g = s = d = 1;
                 break;
             default:
                 fprintf(stderr, "Usage: %s [-h] [-L -d -g -i -p -s -t -u | -l] [dirname]\n", argv[0]);
@@ -98,7 +99,15 @@ int main(int argc, char* argv[])
 
             if (strcmp(dirInfo->d_name, ".") != 0 && strcmp(dirInfo->d_name, "..") != 0)
             {
-                stat(dirInfo->d_name, &statbuf);
+                if ( L == 1 )
+                {
+                    stat(dirInfo->d_name, &statbuf);
+                }
+                else
+                {
+                    lstat(dirInfo->d_name, &statbuf);
+                }
+
                 if (S_ISDIR(statbuf.st_mode) != 0)
                 {
                     strcpy(next, cwd);
@@ -227,6 +236,34 @@ int main(int argc, char* argv[])
                 {
                     struct group *gid = getgrgid(statbuf.st_gid);
                     printf("%*s ", 8, gid->gr_name);
+                }
+
+                if( s == 1)
+                {
+                    long long size = statbuf.st_size;
+                    if (size >= 1073741824)
+                    {
+                        printf("%*iG ", 5, size/1073741824);
+                    }
+                    else if (size >= 1048576)
+                    {
+                        printf("%*iM ", 5, size/1048576);
+                    }
+                    else if (size >= 1024)
+                    {
+                        printf("%*iK ", 5, size/1024);
+                    }
+                    else
+                    {
+                        printf("%*i ", 6, size);
+                    }
+                }
+
+                if( d == 1)
+                {
+                    char time[40];
+                    strftime(time, 40, "%b %d, %Y", localtime(&statbuf.st_mtime));
+                    printf("%*s ", 10, time);
                 }
 
                 printf("%s/%s\n", strstr(cwd, simpleDirectory), dirInfo->d_name);
